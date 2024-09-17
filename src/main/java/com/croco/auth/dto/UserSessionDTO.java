@@ -12,5 +12,8 @@ public class UserSessionDTO {
     private Long userId;
     private LocalDateTime startSession;
     private LocalDateTime endSession;
-    // getters and setters
+    private String device;
+    private String ip;
+
+    // Геттеры и сеттеры
 }
