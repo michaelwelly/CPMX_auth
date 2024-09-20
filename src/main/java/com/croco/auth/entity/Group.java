@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "user_groups")
 @Getter
 @Setter
 public class Group {
@@ -18,6 +18,4 @@ public class Group {
 
     @Column(name = "description_str")
     private String description;
-
-    // Геттеры и сеттеры
 }

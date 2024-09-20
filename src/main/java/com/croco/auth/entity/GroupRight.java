@@ -1,8 +1,11 @@
 package com.croco.auth.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "group_right")
@@ -13,15 +16,19 @@ public class GroupRight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "system_part_id")
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @NotNull
+    @Column(name = "system_part", nullable = false)
     private SystemPart systemPart;
 
     @Column(name = "fieldno_str")
     private String fieldNo;
 
-    @ManyToOne
-    @JoinColumn(name = "field_right_type_id")
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @NotNull
+    @Column(name = "right_type", nullable = false)
     private RightType fieldRightType;
 
     @ManyToOne
@@ -30,6 +37,4 @@ public class GroupRight {
 
     @Column(name = "title_str")
     private String title;
-
-    // Геттеры и сеттеры
 }
