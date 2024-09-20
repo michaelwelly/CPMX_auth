@@ -2,86 +2,63 @@ package com.croco.auth.service.impl;
 
 import com.croco.auth.dto.AuthRequestDTO;
 import com.croco.auth.dto.AuthResponseDTO;
+import com.croco.auth.entity.Role;
 import com.croco.auth.entity.User;
-import com.croco.auth.entity.UserSession;
-import com.croco.auth.mapper.UserMapper;
-import com.croco.auth.repository.UserRepository;
-import com.croco.auth.repository.UserSessionRepository;
-import com.croco.auth.service.AuthService;
-import com.croco.auth.service.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.croco.auth.entity.UserStatus;
+import com.croco.auth.service.JwtService;
+import com.croco.auth.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+@RequiredArgsConstructor
+public class AuthServiceImpl {
+    private final UserService userService;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserRepository userRepository;
+    /**
+     * Регистрация пользователя
+     *
+     * @param request данные пользователя
+     * @return токен
+     */
+    public AuthResponseDTO signUp(AuthRequestDTO request) {
 
-    @Autowired
-    private UserSessionRepository userSessionRepository;
+        var user = User.builder()
+                .loginName(request.getLoginName())
+                .password(passwordEncoder.encode(request.getHashedPassword()).getBytes())
+                .role(Role.ROLE_USER)
+                .userStatus(UserStatus.ENABLED)
+                .build();
 
-    @Autowired
-    private UserMapper userMapper;
+        userService.create(user);
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Override
-    public AuthResponseDTO authenticate(AuthRequestDTO authRequest) {
-        String loginName = authRequest.getLoginName();
-        String rawPassword = authRequest.getHashedPassword();
-
-        User user = userRepository.findByLoginName(loginName)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-
-        // Хэширование введенного пароля
-        String hashedInputPassword = hashPassword(rawPassword); // Метод для хэширования пароля
-
-        // Проверка захешированного пароля
-        //if (!user.getPassword().equals(hashedInputPassword)) {
-          //  throw new RuntimeException("Неверный пароль");
-      //  }
-
-        // Генерация сессионного токена
-        String sessionToken = jwtTokenProvider.generateToken(userMapper.toDto(user)); // Генерация JWT токена
-
-        // Сохранение сессии пользователя
-        UserSession userSession = new UserSession();
-        userSession.setUser(user);
-        userSession.setStartSession(LocalDateTime.now());
-        userSession.setEndSession(null); // Сессия активна, пока пользователь не выйдет
-        userSession.setDevice("Device Info"); //  информация о устройстве
-        userSession.setIp("User IP"); // IP-адрес пользователя
-        userSessionRepository.save(userSession); // Сохранение сессии в базе данных
-
-        // Формирование ответа
-        AuthResponseDTO response = new AuthResponseDTO();
-        response.setUserId(user.getId());
-        response.setLoginName(user.getLoginName());
-        response.setUserDescription(user.getUserDescription());
-        response.setUserStatus(user.getUserStatus());
-        response.setSessionToken(sessionToken); // Возвращаем токен сессии
-
-        return response; // Возвращаем ответ
+        var jwt = jwtService.generateToken(user);
+        return new AuthResponseDTO(user.getId(), user.getLoginName(), user.getUserDescription(), user.getUserStatus(), jwt);
     }
 
-    public String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(password.getBytes());
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Ошибка хэширования пароля", e);
-        }
+    /**
+     * Аутентификация пользователя
+     *
+     * @param request данные пользователя
+     * @return токен
+     */
+    public AuthResponseDTO signIn(AuthRequestDTO request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getLoginName(),
+                request.getHashedPassword()
+        ));
+
+        var user = userService
+                .userDetailsService()
+                .loadUserByUsername(request.getLoginName());
+
+        var jwt = jwtService.generateToken(user);
+        return new AuthResponseDTO(jwt);
     }
 }
