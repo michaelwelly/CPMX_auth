@@ -8,8 +8,11 @@ import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -27,11 +30,15 @@ public class Event {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "event_type_id")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @NotNull
+    @Column(name = "event_type", nullable = false)
     private EventType eventType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "system_part_id")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @NotNull
+    @Column(name = "system_part_type", nullable = false)
     private SystemPart systemPart;
 
     @Column(name = "field_name_str")

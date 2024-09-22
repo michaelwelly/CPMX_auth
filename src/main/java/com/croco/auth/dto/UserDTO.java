@@ -15,6 +15,4 @@ public class UserDTO {
     private UserStatus userStatus;
     private LocalDateTime createDate;
     private LocalDateTime lastLoginDate;
-
-    // Геттеры и сеттеры
 }

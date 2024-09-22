@@ -15,5 +15,5 @@ public class UserSessionDTO {
     private String device;
     private String ip;
 
-    // Геттеры и сеттеры
+
 }
