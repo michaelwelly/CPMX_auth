@@ -40,6 +40,4 @@ public class UserSession {
 
     @Column(name = "ip_str")
     private String ip;
-
-    // Геттеры и сеттеры
 }
