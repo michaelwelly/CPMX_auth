@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
         return repository.save(user);
     }
 
-
     /**
      * Создание пользователя
      *
@@ -53,8 +52,9 @@ public class UserServiceImpl implements UserService {
      * @return пользователь
      */
     public User getByUsername(String loginName) {
-        return repository.findByLoginName(loginName)
+        User user = repository.findByLoginName(loginName)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+        return user;
 
     }
 
@@ -91,5 +91,9 @@ public class UserServiceImpl implements UserService {
         var user = getCurrentUser();
         user.setRole(Role.ROLE_ADMIN);
         save(user);
+    }
+
+    public boolean existsByLoginName(String loginName) {
+        return repository.findByLoginName(loginName).isPresent();
     }
 }

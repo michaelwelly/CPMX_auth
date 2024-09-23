@@ -13,5 +13,5 @@ public interface UserService {
     User getByUsername(String loginName);
     User create(User user);
     User save(User user);
-
+    boolean existsByLoginName(String loginName);
 }

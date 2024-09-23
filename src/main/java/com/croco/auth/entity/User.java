@@ -19,7 +19,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -78,31 +77,31 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return Arrays.toString(this.password);
+        return new String(this.password); // Преобразуем массив байтов в строку
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.loginName;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
