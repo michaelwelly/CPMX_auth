@@ -1,6 +1,5 @@
 package com.croco.auth.configurations;
 
-import com.croco.auth.service.JwtAuthenticationFilter;
 import com.croco.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

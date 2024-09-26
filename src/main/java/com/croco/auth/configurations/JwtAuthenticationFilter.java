@@ -1,12 +1,13 @@
-package com.croco.auth.service;
+package com.croco.auth.configurations;
+import com.croco.auth.service.JwtService;
+import com.croco.auth.service.UserService;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import jakarta.servlet.FilterChain;
@@ -15,19 +16,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String HEADER_NAME = "Authorization";
     private final JwtService jwtService;
     private final UserService userService;
-
-    public JwtAuthenticationFilter(JwtService jwtService, UserService userService) {
-        this.jwtService = jwtService;
-        this.userService = userService;
-    }
 
     @Override
     protected void doFilterInternal(
