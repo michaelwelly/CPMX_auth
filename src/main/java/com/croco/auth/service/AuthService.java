@@ -2,9 +2,22 @@ package com.croco.auth.service;
 
 import com.croco.auth.dto.AuthRequestDTO;
 import com.croco.auth.dto.AuthResponseDTO;
-import com.croco.auth.dto.LoginRequest;
-import com.croco.auth.dto.UserDTO;
 
 public interface AuthService {
-    AuthResponseDTO authenticate(AuthRequestDTO authRequest);
+    /**
+     * Регистрация пользователя
+     *
+     * @param request данные пользователя
+     * @return токен
+     */
+     AuthResponseDTO signUp(AuthRequestDTO request);
+
+    /**
+     * Аутентификация пользователя
+     *
+     * @param request данные пользователя
+     * @return токен
+     */
+     AuthResponseDTO signIn(AuthRequestDTO request);
+
 }

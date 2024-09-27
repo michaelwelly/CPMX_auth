@@ -6,6 +6,7 @@ import com.croco.auth.entity.Role;
 import com.croco.auth.entity.User;
 import com.croco.auth.entity.UserStatus;
 import com.croco.auth.exception.UserAlreadyExistsException;
+import com.croco.auth.service.AuthService;
 import com.croco.auth.service.JwtService;
 import com.croco.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl {
+public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;

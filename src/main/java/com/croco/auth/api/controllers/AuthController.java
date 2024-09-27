@@ -3,7 +3,7 @@ package com.croco.auth.api.controllers;
 import com.croco.auth.dto.AuthRequestDTO;
 import com.croco.auth.dto.AuthResponseDTO;
 import com.croco.auth.exception.UserAlreadyExistsException;
-import com.croco.auth.service.impl.AuthServiceImpl;
+import com.croco.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Аутентификация")
 public class AuthController {
-    private final AuthServiceImpl authenticationService;
+    private final AuthService authenticationService;
 
     @Operation(summary = "Регистрация пользователя")
     @PostMapping("/sign-up")
