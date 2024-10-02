@@ -2,8 +2,10 @@ package com.croco.auth.configurations;
 
 import com.croco.auth.dto.AuthRequestDTO;
 import com.croco.auth.dto.AuthResponseDTO;
+import com.croco.auth.dto.SecurityEventDTO;
 import com.croco.auth.kafka.KafkaAuthRequestDeserializer;
 import com.croco.auth.kafka.KafkaAuthResponseSerializer;
+import com.croco.auth.kafka.KafkaSecurityLoggerSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -31,16 +33,20 @@ public class KafkaConfiguration {
     private String groupId;
 
     @Bean
-    KafkaTemplate<String, String> stringKafkaTemplate(DefaultKafkaProducerFactory<String, String> stringProducerFactory) {
-        return new KafkaTemplate<>(stringProducerFactory);
-    }
-
-    @Bean
     public ProducerFactory<String, AuthResponseDTO> producerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAuthResponseSerializer.class);
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+    @Bean
+    public ProducerFactory<String, SecurityEventDTO> producerSecurityFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaSecurityLoggerSerializer.class);
         return new DefaultKafkaProducerFactory<>(config);
     }
 
@@ -62,7 +68,12 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, AuthResponseDTO> kafkaTemplate() {
+    public KafkaTemplate<String, AuthResponseDTO> authResponseKafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public KafkaTemplate<String, SecurityEventDTO> securityKafkaTemplate() {
+        return new KafkaTemplate<>(producerSecurityFactory());
     }
 }

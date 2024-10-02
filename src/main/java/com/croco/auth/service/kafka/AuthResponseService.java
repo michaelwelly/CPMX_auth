@@ -1,7 +1,9 @@
 package com.croco.auth.service.kafka;
 
 import com.croco.auth.dto.AuthResponseDTO;
+import com.croco.auth.entity.UserStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,15 @@ public class AuthResponseService {
     private String responseTopic;
 
     @Autowired
+    @Qualifier("authResponseKafkaTemplate")
     private KafkaTemplate<String, AuthResponseDTO> kafkaTemplate;
 
     public void sendAuthResponse(AuthResponseDTO authResponse) {
+        kafkaTemplate.send(responseTopic, authResponse);
+    }
+
+    public void sendAnauthorizedAuthResponse(String loginName) {
+        AuthResponseDTO authResponse = new AuthResponseDTO(null, loginName,null, UserStatus.DISABLED,null );
         kafkaTemplate.send(responseTopic, authResponse);
     }
 }

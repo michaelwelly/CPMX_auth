@@ -27,7 +27,15 @@ public class AuthRequestsListener {
     public void listen(AuthRequestDTO authRequest) {
         // Обработка полученного AuthRequestDTO
         log.info("Received AuthRequest: " + authRequest);
-        AuthResponseDTO responseDTO = authenticationService.signIn(authRequest);
-        authResponseService.sendAuthResponse(responseDTO);
+        AuthResponseDTO responseDTO = null;
+        try{
+            responseDTO = authenticationService.signIn(authRequest);
+        }catch(Exception e) {
+            authResponseService.sendAnauthorizedAuthResponse(authRequest.getLoginName());
+        }
+        if(responseDTO != null){
+            authResponseService.sendAuthResponse(responseDTO);
+        }
+
     }
 }
