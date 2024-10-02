@@ -27,6 +27,7 @@ public interface AuthRequestMapper {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(AuthRequestXmlDTO.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            String logdata = new String (data);
             return (AuthRequestXmlDTO) unmarshaller.unmarshal(new ByteArrayInputStream(data));
         } catch (JAXBException e) {
             throw new RuntimeException("Failed to deserialize XML", e);
