@@ -6,15 +6,23 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlRootElement(name = "AuthResponse")
 @Setter
 public class AuthResponseXmlDTO {
+     private String uuid;
      private Long userId;
      private String loginName;
      private String userDescription;
      private UserAuthorizationStatus userStatus;
      private String sessionToken;
+
+     @XmlElement(name = "uuid")
+     public String getUUID() {
+          return uuid;
+     }
 
      @XmlElement(name = "UserId")
      public Long getUserId() {

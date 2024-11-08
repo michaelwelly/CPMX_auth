@@ -7,12 +7,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Ответ c токеном доступа")
 public class AuthResponseDTO {
+    @Schema(description = "UUID запроса")
+    private String uuid;
     @Schema(description = "Id пользователя")
     private Long userId;
     @Schema(description = "Логин пользователя")

@@ -31,14 +31,12 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @NotNull
-    @Column(name = "event_type", nullable = false)
+    @Column(name = "event_type")
     private EventType eventType;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @NotNull
-    @Column(name = "system_part_type", nullable = false)
+    @Column(name = "system_part_type")
     private SystemPart systemPart;
 
     @Column(name = "field_name_str")

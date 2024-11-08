@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 public class AuthRequestsListener {
@@ -31,7 +33,7 @@ public class AuthRequestsListener {
         try{
             responseDTO = authenticationService.signIn(authRequest);
         }catch(Exception e) {
-            authResponseService.sendAnauthorizedAuthResponse(authRequest.getLoginName());
+            authResponseService.sendAnauthorizedAuthResponse(authRequest.getUuid(), authRequest.getLoginName());
         }
         if(responseDTO != null){
             authResponseService.sendAuthResponse(responseDTO);

@@ -6,6 +6,7 @@ import com.croco.auth.entity.EventType;
 import com.croco.auth.entity.SystemPart;
 import com.croco.auth.entity.User;
 import com.croco.auth.repository.EventRepository;
+import com.croco.auth.repository.UserRepository;
 import com.croco.auth.service.LoggingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,13 @@ import java.time.LocalDateTime;
 public class LoggingServiceImpl implements LoggingService {
 
     private final EventRepository eventRepository;
-
-    public void logEvent(EventDTO eventDTO) {
+    private final UserRepository userRepository;
+    public void logEvent(EventDTO eventDTO, EventType eventType, SystemPart systemPart) {
         Event event = new Event();
-        event.setUser(new User(eventDTO.getUserId()));
-        event.setEventType(EventType.valueOf(eventDTO.getEventType())); // Преобразование строки в Enum
-        event.setSystemPart(SystemPart.valueOf(eventDTO.getSystemPart())); // Преобразование строки в Enum
+        User user = userRepository.findByLoginName(eventDTO.getFieldName()).get();
+        event.setUser(user);
+        event.setEventType(eventType);
+        event.setSystemPart(systemPart);
         event.setFieldName(eventDTO.getFieldName());
         event.setFieldValueBefore(eventDTO.getFieldValueBefore());
         event.setFieldValueAfter(eventDTO.getFieldValueAfter());
@@ -40,7 +42,7 @@ public class LoggingServiceImpl implements LoggingService {
         eventDTO.setEventType("INFO");
         eventDTO.setSystemPart("AUTH");
         eventDTO.setDescription(message);
-        logEvent(eventDTO);
+        logEvent(eventDTO, EventType.INFO, SystemPart.AUTH);
     }
 
     public void logError(Long userId, String message) {
@@ -49,6 +51,6 @@ public class LoggingServiceImpl implements LoggingService {
         eventDTO.setEventType("ERROR");
         eventDTO.setSystemPart("AUTH");
         eventDTO.setDescription(message);
-        logEvent(eventDTO);
+        logEvent(eventDTO, EventType.ERROR, SystemPart.AUTH);
     }
 }
