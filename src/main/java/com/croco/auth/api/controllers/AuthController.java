@@ -28,6 +28,8 @@ public class AuthController {
     @Operation(summary = "Авторизация пользователя")
     @PostMapping("/sign-in")
     public AuthResponseDTO signIn(@RequestBody @Valid AuthRequestDTO request) {
+
+
         return authenticationService.signIn(request);
     }
 

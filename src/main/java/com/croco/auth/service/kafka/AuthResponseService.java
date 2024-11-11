@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class AuthResponseService {
 
@@ -22,8 +24,8 @@ public class AuthResponseService {
         kafkaTemplate.send(responseTopic, authResponse);
     }
 
-    public void sendAnauthorizedAuthResponse(String loginName) {
-        AuthResponseDTO authResponse = new AuthResponseDTO(null, loginName,null, UserStatus.DISABLED,null );
+    public void sendAnauthorizedAuthResponse(String uuid, String loginName) {
+        AuthResponseDTO authResponse = new AuthResponseDTO(uuid,null, loginName,null, UserStatus.DISABLED,null );
         kafkaTemplate.send(responseTopic, authResponse);
     }
 }

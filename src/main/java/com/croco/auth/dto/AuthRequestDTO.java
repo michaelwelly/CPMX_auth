@@ -7,9 +7,14 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Data
 @Schema(description = "Запрос на авторизацию")
 public class AuthRequestDTO {
+    @Schema(description = "UUID запроса")
+    @NotBlank(message = "UUID запроса не может быть пустыми")
+    private String uuid;
 
     @Schema(description = "Имя пользователя", example = "Jon")
     @Size(min = 5, max = 50, message = "Имя пользователя должно содержать от 5 до 50 символов")
