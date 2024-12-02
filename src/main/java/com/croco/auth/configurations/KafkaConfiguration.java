@@ -8,6 +8,7 @@ import com.croco.auth.kafka.KafkaAuthResponseSerializer;
 import com.croco.auth.kafka.KafkaSecurityLoggerSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,5 +76,18 @@ public class KafkaConfiguration {
     @Bean
     public KafkaTemplate<String, SecurityEventDTO> securityKafkaTemplate() {
         return new KafkaTemplate<>(producerSecurityFactory());
+    }
+
+    // Consumer forfiles topic
+    @Bean
+    public DefaultKafkaConsumerFactory<String, byte[]> kafkaFilesConsumerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
+        configProps.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 50 * 1024 * 1024); // 10 МБ
+        configProps.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, 50 * 1024 * 1024); // 20 МБ
+        return new DefaultKafkaConsumerFactory<>(configProps);
     }
 }
